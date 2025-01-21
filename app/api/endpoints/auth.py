@@ -3,11 +3,12 @@ from typing import Any, Dict
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 import logging
 
 from app.core.security import verify_password, create_access_token, get_password_hash
-from app.core.config import settings
+from app.core.config import get_settings
 from app.api.deps import get_db, get_current_doctor
 from app.crud import doctor as crud_doctor
 from app.models.doctor import Doctor, DoctorType
@@ -15,10 +16,20 @@ from app.schemas.doctor import DoctorCreate, Doctor as DoctorSchema
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+
+settings = get_settings()
 
 @router.options("/token")
 async def token_options():
-    return {"message": "OK"}
+    return JSONResponse(
+        content={"message": "OK"},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        },
+    )
 
 @router.post("/token")
 async def login_for_access_token(
@@ -26,37 +37,59 @@ async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ) -> Dict[str, str]:
-    logger.info(f"Login attempt for doctor: {form_data.username}")
-    logger.info(f"Request headers: {request.headers}")
+    logger.debug(f"Login attempt for doctor: {form_data.username}")
+    logger.debug(f"Request headers: {dict(request.headers)}")
+    logger.debug(f"Request method: {request.method}")
     
-    doctor = crud_doctor.get_doctor_by_email(db, email=form_data.username)
-    if not doctor:
-        logger.warning(f"Doctor not found: {form_data.username}")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
+    try:
+        doctor = crud_doctor.get_doctor_by_email(db, email=form_data.username)
+        if not doctor:
+            logger.warning(f"Doctor not found: {form_data.username}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect email or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        if not verify_password(form_data.password, doctor.hashed_password):
+            logger.warning(f"Invalid password for doctor: {form_data.username}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect email or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        logger.info(f"Login successful for doctor: {form_data.username}")
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            subject=str(doctor.id), expires_delta=access_token_expires
         )
-    
-    if not verify_password(form_data.password, doctor.hashed_password):
-        logger.warning(f"Invalid password for doctor: {form_data.username}")
+        
+        response = {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "doctor_type": doctor.doctor_type
+        }
+        logger.debug(f"Sending response: {response}")
+        return response
+        
+    except Exception as e:
+        logger.error(f"Error during login: {str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
         )
-    
-    logger.info(f"Login successful for doctor: {form_data.username}")
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        subject=doctor.id,
-        expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
 
 @router.options("/register")
 async def register_options():
-    return {"message": "OK"}
+    return JSONResponse(
+        content={"message": "OK"},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        },
+    )
 
 @router.post("/register", response_model=DoctorSchema)
 async def register_doctor(
@@ -122,7 +155,14 @@ async def register_doctor(
 
 @router.options("/me")
 async def me_options():
-    return {"message": "OK"}
+    return JSONResponse(
+        content={"message": "OK"},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        },
+    )
 
 @router.get("/me", response_model=DoctorSchema)
 async def read_doctor_me(

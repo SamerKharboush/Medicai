@@ -2,9 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
+import logging
 
 from app.api.api import api_router
 from app.core.config import settings
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -13,14 +17,19 @@ app = FastAPI(
 )
 
 # Configure CORS
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:8003",
+    "http://127.0.0.1:8003",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:8000"],
-    allow_credentials=True,
+    allow_origins=origins,
+    allow_credentials=False,  # Set to False since we're not using cookies
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
-    max_age=3600,
 )
 
 # Create necessary directories
@@ -40,3 +49,5 @@ async def root():
 
 # Include API router
 app.include_router(api_router)
+
+logger.debug("FastAPI app configured and ready to start")

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8003',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -72,7 +72,7 @@ export const authAPI = {
       });
       
       const response = await axios.post('/auth/token', formData, {
-        baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000',
+        baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8003',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Accept': 'application/json',
@@ -139,7 +139,7 @@ export const authAPI = {
       console.log('Sending registration data:', JSON.stringify(transformedData, null, 2));
 
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/auth/register`,
+        `${process.env.REACT_APP_API_URL || 'http://localhost:8003'}/auth/register`,
         transformedData,
         {
           headers: {

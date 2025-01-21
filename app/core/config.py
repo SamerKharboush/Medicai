@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL", 
-        "postgresql://postgres:postgres@localhost:5432/medicai"
+        "postgresql://samerkharboush:samerkharboush@localhost:5432/medicai"
     )
     
     # JWT
@@ -25,11 +25,17 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
         "http://localhost:8000",
         "http://127.0.0.1:8000",
+        "http://localhost:8001",
+        "http://127.0.0.1:8001",
+        "http://localhost:8002",
+        "http://127.0.0.1:8002",
         "http://web:8000",
         "http://frontend:80",
         "http://frontend:3000",
         "http://0.0.0.0:3000",
-        "http://0.0.0.0:8000"
+        "http://0.0.0.0:8000",
+        "http://0.0.0.0:8001",
+        "http://0.0.0.0:8002"
     ]
     
     # Models

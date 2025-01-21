@@ -14,26 +14,107 @@ import PrivateRoute from './components/PrivateRoute';
 
 const theme = createTheme({
   palette: {
+    mode: 'light',
     primary: {
-      main: '#1976d2',
+      main: '#2563eb', // Modern blue
+      light: '#60a5fa',
+      dark: '#1d4ed8',
     },
     secondary: {
-      main: '#dc004e',
+      main: '#7c3aed', // Modern purple
+      light: '#a78bfa',
+      dark: '#5b21b6',
     },
     background: {
-      default: '#f5f5f5',
+      default: '#f8fafc',
+      paper: '#ffffff',
+    },
+    error: {
+      main: '#ef4444',
+    },
+    success: {
+      main: '#10b981',
+    },
+    warning: {
+      main: '#f59e0b',
+    },
+    info: {
+      main: '#3b82f6',
     },
   },
   typography: {
     fontFamily: [
+      'Inter',
       '-apple-system',
       'BlinkMacSystemFont',
       '"Segoe UI"',
       'Roboto',
-      '"Helvetica Neue"',
       'Arial',
       'sans-serif',
     ].join(','),
+    h1: {
+      fontWeight: 700,
+      fontSize: '2.5rem',
+    },
+    h2: {
+      fontWeight: 600,
+      fontSize: '2rem',
+    },
+    h3: {
+      fontWeight: 600,
+      fontSize: '1.75rem',
+    },
+    h4: {
+      fontWeight: 600,
+      fontSize: '1.5rem',
+    },
+    h5: {
+      fontWeight: 600,
+      fontSize: '1.25rem',
+    },
+    h6: {
+      fontWeight: 600,
+      fontSize: '1rem',
+    },
+    button: {
+      textTransform: 'none',
+      fontWeight: 500,
+    },
+  },
+  shape: {
+    borderRadius: 12,
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '8px',
+          padding: '8px 16px',
+          fontWeight: 500,
+        },
+        contained: {
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none',
+          },
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: '16px',
+          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: '16px',
+        },
+      },
+    },
   },
 });
 
@@ -47,36 +128,32 @@ function App() {
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute>
-                  <Layout>
+            <Route element={<Layout />}>
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute>
                     <Dashboard />
-                  </Layout>
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/record-history"
-              element={
-                <PrivateRoute>
-                  <Layout>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/history"
+                element={
+                  <PrivateRoute>
                     <RecordHistory />
-                  </Layout>
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/patients"
-              element={
-                <PrivateRoute>
-                  <Layout>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/patients"
+                element={
+                  <PrivateRoute>
                     <PatientList />
-                  </Layout>
-                </PrivateRoute>
-              }
-            />
+                  </PrivateRoute>
+                }
+              />
+            </Route>
           </Routes>
         </Router>
       </AuthProvider>

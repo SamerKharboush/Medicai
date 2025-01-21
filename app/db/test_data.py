@@ -105,6 +105,53 @@ def create_test_data(db: Session) -> None:
     )
     db.add(resident)
 
+    # Create test users for resident and consultant
+    resident_user = Doctor(
+        email="resident@medicai.com",
+        hashed_password=get_password_hash("resident123"),
+        first_name="John",
+        last_name="Smith",
+        medical_license_number="RES123456",
+        qualifications="MD",
+        specialty="Internal Medicine",
+        years_of_experience=2,
+        doctor_type="resident",
+        date_of_birth=date(1990, 1, 1),
+        gender="male",
+        contact_number="+1234567892",
+        emergency_contact="+1234567893",
+        department="Internal Medicine",
+        office_location="Building B, Room 201",
+        consultation_hours='{"Monday": "9:00-17:00", "Tuesday": "9:00-17:00"}',
+        join_date=date(2022, 1, 1),
+        is_active=True
+    )
+    db.add(resident_user)
+    db.flush()
+
+    consultant_user = Doctor(
+        email="consultant@medicai.com",
+        hashed_password=get_password_hash("consultant123"),
+        first_name="Sarah",
+        last_name="Johnson",
+        medical_license_number="CON789012",
+        qualifications="MD, PhD",
+        specialty="Cardiology",
+        years_of_experience=15,
+        doctor_type="consultant",
+        date_of_birth=date(1975, 5, 15),
+        gender="female",
+        contact_number="+1234567894",
+        emergency_contact="+1234567895",
+        department="Cardiology",
+        office_location="Building A, Room 101",
+        consultation_hours='{"Monday": "9:00-17:00", "Wednesday": "9:00-17:00", "Friday": "9:00-13:00"}',
+        join_date=date(2010, 1, 1),
+        is_active=True
+    )
+    db.add(consultant_user)
+    db.flush()
+
     # Create test patients
     test_patients = [
         {

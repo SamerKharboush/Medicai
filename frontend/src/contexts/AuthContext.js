@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8003';
 
 const AuthContext = createContext(null);
 
@@ -67,8 +67,7 @@ export const AuthProvider = ({ children }) => {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',
-        },
-        withCredentials: true
+        }
       });
 
       const { access_token } = response.data;
@@ -100,8 +99,7 @@ export const AuthProvider = ({ children }) => {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',
-        },
-        withCredentials: true
+        }
       });
 
       setCurrentUser(response.data);
@@ -128,8 +126,7 @@ export const AuthProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Accept': 'application/json',
-        },
-        withCredentials: true
+        }
       });
 
       console.log('Login response:', response.data);
@@ -144,8 +141,7 @@ export const AuthProvider = ({ children }) => {
           headers: {
             'Authorization': `Bearer ${access_token}`,
             'Accept': 'application/json',
-          },
-          withCredentials: true
+          }
         });
         
         console.log('User info:', userResponse.data);
@@ -160,16 +156,7 @@ export const AuthProvider = ({ children }) => {
         response: error.response?.data,
         status: error.response?.status
       });
-      
-      if (error.response?.status === 401) {
-        throw new Error('Invalid email or password');
-      } else if (error.response?.data?.detail) {
-        throw new Error(error.response.data.detail);
-      } else if (error.message === 'Network Error') {
-        throw new Error('Unable to connect to the server. Please try again.');
-      } else {
-        throw new Error('An error occurred during login. Please try again.');
-      }
+      throw error;
     }
   };
 
@@ -179,8 +166,7 @@ export const AuthProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-        },
-        withCredentials: true
+        }
       });
       return response.data;
     } catch (error) {
@@ -205,7 +191,6 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(null);
     if (tokenRefreshTimeout) {
       clearTimeout(tokenRefreshTimeout);
-      setTokenRefreshTimeout(null);
     }
   };
 

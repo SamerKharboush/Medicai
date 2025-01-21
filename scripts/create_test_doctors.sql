@@ -1,0 +1,93 @@
+-- Insert Consultant Doctor
+INSERT INTO doctors (
+    email,
+    hashed_password,  -- Password: consultant123
+    first_name,
+    last_name,
+    medical_license_number,
+    qualifications,
+    specialty,
+    subspecialty,
+    years_of_experience,
+    doctor_type,
+    date_of_birth,
+    gender,
+    contact_number,
+    emergency_contact,
+    department,
+    office_location,
+    consultation_hours,
+    join_date,
+    is_active,
+    teaching_responsibilities,
+    administrative_roles
+) VALUES (
+    'consultant@medicai.com',
+    '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewKyNiGRh3gJK5mC',  -- hashed password for 'consultant123'
+    'John',
+    'Smith',
+    'CON123456',
+    'MD, PhD, FRCS',
+    'Cardiology',
+    'Interventional Cardiology',
+    15,
+    'consultant',
+    '1975-05-15',
+    'Male',
+    '+1234567890',
+    '+1987654321',
+    'Cardiology',
+    'Building A, Floor 3, Room 302',
+    '{"Monday": "9:00-17:00", "Wednesday": "9:00-17:00", "Friday": "9:00-13:00"}',
+    '2020-01-01',
+    true,
+    'Clinical Training Supervisor, Medical Student Mentor',
+    'Department Head, Clinical Research Lead'
+);
+
+-- Insert Resident Doctor
+INSERT INTO doctors (
+    email,
+    hashed_password,  -- Password: resident123
+    first_name,
+    last_name,
+    medical_license_number,
+    qualifications,
+    specialty,
+    subspecialty,
+    years_of_experience,
+    doctor_type,
+    date_of_birth,
+    gender,
+    contact_number,
+    emergency_contact,
+    department,
+    office_location,
+    consultation_hours,
+    join_date,
+    is_active,
+    graduation_date,
+    rotation_schedule
+) VALUES (
+    'resident@medicai.com',
+    '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewKyNiGRh3gJK5mC',  -- hashed password for 'resident123'
+    'Sarah',
+    'Johnson',
+    'RES789012',
+    'MD',
+    'Cardiology',
+    NULL,
+    3,
+    'resident',
+    '1990-08-25',
+    'Female',
+    '+1234567891',
+    '+1987654322',
+    'Cardiology',
+    'Building A, Floor 3, Room 315',
+    '{"Monday": "8:00-16:00", "Tuesday": "8:00-16:00", "Thursday": "8:00-16:00"}',
+    '2022-07-01',
+    true,
+    '2022-06-15',
+    '{"Q1": "General Cardiology", "Q2": "Cardiac ICU", "Q3": "Cath Lab", "Q4": "Outpatient Clinic"}'
+);

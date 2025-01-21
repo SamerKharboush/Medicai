@@ -1,0 +1,7 @@
+README.md
+setup.py
+medicai.egg-info/PKG-INFO
+medicai.egg-info/SOURCES.txt
+medicai.egg-info/dependency_links.txt
+medicai.egg-info/requires.txt
+medicai.egg-info/top_level.txt
